@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Donations | NexusChurch{% endblock %}
+{% block page_title %}Donations{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search donations...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Donation Type</option>
+      <option value="tithe" {% if status_filter == 'tithe' %}selected{% endif %}>Tithe</option>
+      <option value="offering" {% if status_filter == 'offering' %}selected{% endif %}>Offering</option>
+      <option value="building_fund" {% if status_filter == 'building_fund' %}selected{% endif %}>Building Fund</option>
+      <option value="mission" {% if status_filter == 'mission' %}selected{% endif %}>Mission</option>
+      <option value="special" {% if status_filter == 'special' %}selected{% endif %}>Special</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/donations/create/" class="btn btn-primary">+ New Donation</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Donor Name</th><th>Amount</th><th>Donation Type</th><th>Date</th><th>Method</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/donations/{{ r.pk }}/edit/"><strong>{{ r.donor_name }}</strong></a></td>
+        <td>{{ r.amount|floatformat:2 }}</td>
+        <td><span class="badge badge-blue">{{ r.get_donation_type_display }}</span></td>
+        <td style="color:var(--muted)">{{ r.date|date:"M d, Y"|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_method_display }}</span></td>
+        <td class="actions">
+          <a href="/donations/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/donations/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No donations found.</p>
+    <a href="/donations/create/" class="btn btn-primary" style="margin-top:1rem">Create Donation</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

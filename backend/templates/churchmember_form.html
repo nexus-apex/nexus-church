@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} ChurchMember | NexusChurch{% endblock %}
+{% block page_title %}{% if editing %}Edit ChurchMember{% else %}New ChurchMember{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ record.email|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ record.phone|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Membership Type</label>
+        <select name="membership_type">
+          <option value="regular" {% if record.membership_type == 'regular' %}selected{% endif %}>Regular</option>
+          <option value="youth" {% if record.membership_type == 'youth' %}selected{% endif %}>Youth</option>
+          <option value="senior" {% if record.membership_type == 'senior' %}selected{% endif %}>Senior</option>
+          <option value="volunteer" {% if record.membership_type == 'volunteer' %}selected{% endif %}>Volunteer</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Join Date</label>
+        <input type="date" name="join_date" value="{{ record.join_date|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="active" {% if record.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if record.status == 'inactive' %}selected{% endif %}>Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Ministry</label>
+        <input type="text" name="ministry" value="{{ record.ministry|default:'' }}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Address</label>
+      <textarea name="address">{{ record.address|default:'' }}</textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} ChurchMember</button>
+      <a href="/churchmembers/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
